@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Darknet Free | Advanced Network Tool</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6a00ff;
+            --secondary: #00f7ff;
+            --dark: #0a0a20;
+            --darker: #050510;
+            --light: #e0e0ff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: var(--darker);
+            color: var(--light);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(106, 0, 255, 0.15) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 247, 255, 0.15) 0%, transparent 20%),
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="20" cy="20" r="0.5" fill="white" opacity="0.8"/><circle cx="50" cy="30" r="0.3" fill="white" opacity="0.6"/><circle cx="70" cy="10" r="0.4" fill="white" opacity="0.7"/><circle cx="10" cy="70" r="0.6" fill="white" opacity="0.5"/><circle cx="80" cy="80" r="0.2" fill="white" opacity="0.9"/><circle cx="30" cy="50" r="0.3" fill="white" opacity="0.6"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.8"/></svg>');
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+        
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--secondary);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 10px rgba(0, 247, 255, 0.5);
+            letter-spacing: 2px;
+        }
+        
+        .subtitle {
+            color: var(--primary);
+            font-weight: 300;
+            font-size: 1.1rem;
+        }
+        
+        .panel {
+            background: rgba(10, 10, 32, 0.8);
+            border: 1px solid var(--primary);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 0 20px rgba(106, 0, 255, 0.3);
+            backdrop-filter: blur(5px);
+        }
+        
+        .panel-title {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--secondary);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .panel-title svg {
+            margin-right: 0.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--secondary);
+            font-weight: 500;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--primary);
+            border-radius: 4px;
+            color: var(--light);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 10px rgba(0, 247, 255, 0.3);
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, var(--primary), #4a00e0);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn:hover {
+            background: linear-gradient(135deg, #7b1fff, #5a00c8);
+            box-shadow: 0 0 15px rgba(106, 0, 255, 0.5);
+        }
+        
+        .btn:disabled {
+            background: #333;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        .btn svg {
+            margin-right: 0.5rem;
+        }
+        
+        .status {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 4px;
+            background: rgba(0, 0, 0, 0.3);
+            border-left: 4px solid var(--secondary);
+            display: none;
+        }
+        
+        .status.active {
+            display: block;
+        }
+        
+        .status.error {
+            border-left-color: #ff3860;
+        }
+        
+        .status.success {
+            border-left-color: #09c372;
+        }
+        
+        .progress-container {
+            margin-top: 1rem;
+            height: 6px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .cooldown {
+            color: #ff3860;
+            font-weight: 700;
+            margin-top: 0.5rem;
+            display: none;
+        }
+        
+        .cooldown.active {
+            display: block;
+        }
+        
+        .particle {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+        
+        /* Animation */
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>COSMIC STRIKE</h1>
+            <p class="subtitle">Free Darknet Ddos</p>
+        </header>
+        
+        <main>
+            <div class="panel">
+                <h2 class="panel-title">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    Attack Parameters
+                </h2>
+                
+                <div class="form-group">
+                    <label for="target">Target</label>
+                    <input type="text" id="target" placeholder="example.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="time">Duration (seconds, max 60)</label>
+                    <input type="number" id="time" min="1" max="60" value="30" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="method">Attack Method</label>
+                    <select id="method" required>
+                        <option value="raw">raw</option>
+                        <option value="bypassv2">bypassv2</option>
+                        <option value="bypassv3">bypassv3</option>
+                        <option value="tlsnet">tlsnet</option>
+                        <option value="ninja">ninja</option>
+                    </select>
+                </div>
+                
+                <button id="attack-btn" class="btn">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                    </svg>
+                    Launch Attack
+                </button>
+                
+                <div id="status" class="status">
+                    <div id="status-message"></div>
+                    <div class="progress-container">
+                        <div id="progress-bar" class="progress-bar"></div>
+                    </div>
+                </div>
+                
+                <div id="cooldown" class="cooldown">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <span id="cooldown-timer">30</span> seconds cooldown remaining
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>Cosmic Strike Network Tool &copy; 2023 | For authorized testing only</p>
+        </footer>
+    </div>
+
+    <script>
+        // Security measures
+        document.addEventListener('keydown', function(e) {
+            // Disable F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U
+            if (e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'i' || e.key === 'j')) || 
+                (e.ctrlKey && e.key === 'u')) {
+                e.preventDefault();
+                showStatus('Developer tools are disabled for security reasons.', 'error');
+            }
+        });
+        
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            showStatus('Right-click is disabled for security reasons.', 'error');
+        });
+        
+        // Create particles
+        function createParticles() {
+            const colors = ['rgba(106, 0, 255, 0.7)', 'rgba(0, 247, 255, 0.7)', 'rgba(255, 255, 255, 0.9)'];
+            
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                const size = Math.random() * 3 + 1;
+                const posX = Math.random() * window.innerWidth;
+                const posY = Math.random() * window.innerHeight;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const duration = Math.random() * 20 + 10;
+                const delay = Math.random() * 5;
+                
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${posX}px`;
+                particle.style.top = `${posY}px`;
+                particle.style.backgroundColor = color;
+                particle.style.boxShadow = `0 0 ${size * 2}px ${size}px ${color}`;
+                particle.style.opacity = '0';
+                particle.style.transition = `opacity 1s, transform ${duration}s linear`;
+                particle.style.transitionDelay = `${delay}s`;
+                
+                document.body.appendChild(particle);
+                
+                // Animate particles after a delay
+                setTimeout(() => {
+                    particle.style.opacity = '0.8';
+                    const moveX = (Math.random() - 0.5) * 200;
+                    const moveY = (Math.random() - 0.5) * 200;
+                    particle.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                    
+                    // Fade out and reset position
+                    setTimeout(() => {
+                        particle.style.opacity = '0';
+                        setTimeout(() => {
+                            particle.style.left = `${posX}px`;
+                            particle.style.top = `${posY}px`;
+                            particle.style.transform = 'translate(0, 0)';
+                            setTimeout(() => {
+                                particle.style.opacity = '0.8';
+                                const newMoveX = (Math.random() - 0.5) * 200;
+                                const newMoveY = (Math.random() - 0.5) * 200;
+                                particle.style.transform = `translate(${newMoveX}px, ${newMoveY}px)`;
+                            }, 100);
+                        }, 1000);
+                    }, duration * 1000);
+                }, delay * 1000);
+            }
+        }
+        
+        // Initialize particles
+        createParticles();
+        
+        // Status management
+        function showStatus(message, type = 'info') {
+            const status = document.getElementById('status');
+            const statusMessage = document.getElementById('status-message');
+            
+            status.className = 'status active';
+            status.classList.add(type);
+            statusMessage.textContent = message;
+            
+            setTimeout(() => {
+                status.classList.remove('error', 'success');
+            }, 5000);
+        }
+        
+        // Attack functionality
+        let isAttacking = false;
+        let cooldown = false;
+        let cooldownInterval;
+        
+        document.getElementById('attack-btn').addEventListener('click', async function() {
+            if (isAttacking) {
+                showStatus('An attack is already in progress. Please wait.', 'error');
+                return;
+            }
+            
+            if (cooldown) {
+                showStatus('System is in cooldown. Please wait before launching another attack.', 'error');
+                return;
+            }
+            
+            const target = document.getElementById('target').value.trim();
+            const time = parseInt(document.getElementById('time').value);
+            const method = document.getElementById('method').value;
+            
+            if (!target) {
+                showStatus('Please enter a target.', 'error');
+                return;
+            }
+            
+            if (isNaN(time) || time < 1 || time > 60) {
+                showStatus('Duration must be between 1 and 60 seconds.', 'error');
+                return;
+            }
+            
+            // Start attack
+            isAttacking = true;
+            this.disabled = true;
+            showStatus(`Launching ${method} attack on ${target} for ${time} seconds...`, 'info');
+            
+            // Update progress bar
+            const progressBar = document.getElementById('progress-bar');
+            progressBar.style.width = '0%';
+            
+            // Simulate progress (in a real app, this would be based on actual progress)
+            const progressInterval = setInterval(() => {
+                const currentWidth = parseFloat(progressBar.style.width) || 0;
+                const newWidth = Math.min(currentWidth + (100 / time / 10), 100);
+                progressBar.style.width = `${newWidth}%`;
+            }, 100);
+            
+            try {
+                // In a real implementation, you would send a request to your endpoint
+                // For security reasons, we're simulating the request in this example
+                const endpoint = `http://152.42.230.177:3000/awi?target=${encodeURIComponent(target)}&time=${time}&method=${encodeURIComponent(method)}`;
+                
+                // Simulate API call delay
+                await new Promise(resolve => setTimeout(resolve, time * 1000));
+                
+                // In a real app, you would use fetch:
+                // const response = await fetch(endpoint);
+                // const result = await response.json();
+                
+                // For demo purposes, we'll simulate a successful response
+                const result = { status: 'success', message: 'Attack completed successfully' };
+                
+                showStatus(result.message, 'success');
+            } catch (error) {
+                showStatus(`Attack failed: ${error.message}`, 'error');
+            } finally {
+                clearInterval(progressInterval);
+                progressBar.style.width = '100%';
+                isAttacking = false;
+                this.disabled = false;
+                
+                // Start cooldown
+                startCooldown();
+            }
+        });
+        
+        function startCooldown() {
+            cooldown = true;
+            const cooldownElement = document.getElementById('cooldown');
+            const cooldownTimer = document.getElementById('cooldown-timer');
+            
+            cooldownElement.classList.add('active');
+            
+            let seconds = 30;
+            cooldownTimer.textContent = seconds;
+            
+            cooldownInterval = setInterval(() => {
+                seconds--;
+                cooldownTimer.textContent = seconds;
+                
+                if (seconds <= 0) {
+                    clearInterval(cooldownInterval);
+                    cooldownElement.classList.remove('active');
+                    cooldown = false;
+                }
+            }, 1000);
+        }
+        
+        // Prevent form submission
+        document.querySelector('form')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+        });
+    </script>
+</body>
+</html>
